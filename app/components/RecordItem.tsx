@@ -1,10 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Record } from "@/types/Record";
 import deleteRecord from "@/app/actions/deleteRecord";
 
 const RecordItem = ({ record }: { record: Record }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [formattedDate, setFormattedDate] = useState<string | null>(null); //for debugging added this
+
+  useEffect(() => {
+    if (record?.date) {
+      const formatted = new Date(record?.date).toLocaleDateString();
+      setFormattedDate(formatted);
+    }
+  }, [record?.date]);
 
   const handleDeleteRecord = async (recordId: string) => {
     setIsLoading(true); // Show loading spinner
@@ -22,7 +30,9 @@ const RecordItem = ({ record }: { record: Record }) => {
     >
       <div className="flex flex-col">
         <span className="text-sm text-gray-500">
-          {new Date(record?.date).toLocaleDateString()}
+          {formattedDate || "Loading..."}{" "}
+          {/* Render loading text until date is available */}
+          {/* {new Date(record?.date).toLocaleDateString()} */}
         </span>
         <span className="text-lg font-bold text-gray-800">
           {record?.amount} hours
